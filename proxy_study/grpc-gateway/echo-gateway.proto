@@ -1,0 +1,33 @@
+syntax = "proto3";
+package echo;
+
+import "google/api/annotations.proto";
+
+option go_package = "proto";
+
+message EchoRequest{
+  string message = 1;
+}
+message EchoResponse{
+  string message = 1;
+}
+
+
+service Echo{
+  rpc UnaryEcho(EchoRequest) returns (EchoResponse) {
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
+    };
+  }
+  rpc ServerStreamingEcho(EchoRequest) returns (stream EchoResponse){}
+  rpc ClientStreamingEcho(stream EchoRequest) returns(EchoResponse){}
+  rpc BidirectionalStreamingEcho(stream EchoRequest) returns (stream EchoResponse){}
+}
+
+
+//go get -u github.com/grpc-ecosystem/grpc-gateway
+//go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+
+//protoc -I/usr/local/include -I. -I$GOPATH/src -I$GOPATH/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.15.0/third_party/googleapis --go_out=plugins=grpc:proto echo-gateway.proto
+//protoc -I/usr/local/include -I. -I$GOPATH/src -I$GOPATH/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.15.0/third_party/googleapis --grpc-gateway_out=logtostderr=true:proto echo-gateway.proto

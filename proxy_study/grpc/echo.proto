@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package echo;
+
+
+option go_package = ".;proto";
+
+message EchoRequest {
+  string message = 1;
+}
+
+message EchoResponse {
+  string message = 1;
+}
+
+service Echo{
+  rpc UnaryEcho(EchoRequest) returns (EchoResponse) {}
+  rpc ServerStreamingEcho(EchoRequest) returns (stream EchoResponse){}
+  rpc ClientStreamingEcho(stream EchoRequest) returns(EchoResponse){}
+  rpc BidirectionalStreamingEcho(stream EchoRequest) returns (stream EchoResponse){}
+}
+
+//go get -u google.golang.org/grpc
+//go get -u github.com/golang/protobuf/protoc-gen-go
+//go get -u github.com/golang/protobuf/proto
+
+
+//protoc -I . --go_out=plugins=grpc:proto ./echo.proto
